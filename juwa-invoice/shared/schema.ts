@@ -9,6 +9,11 @@ export const InvoiceDataSchema = z.object({
         quantity: z.number().nullable(),
         unit_price: z.number().nullable(),
     })).nullable(),
+    taxes: z.array(z.object({
+        rate: z.number().nullable().describe('VAT percentage as printed: 20 means 20%, not 0.20.'),
+        taxable_base: z.number().nullable().describe('Explicitly stated taxable amount for this VAT entry; never calculated.'),
+        amount: z.number().nullable().describe('Explicitly stated VAT amount; never calculated.'),
+    })).nullable().describe('VAT breakdown entries; null when unavailable, [] only when the document explicitly has no applicable VAT entries.'),
     total_ht: z.number().nullable(),
     total_ttc: z.number().nullable(),
 });
