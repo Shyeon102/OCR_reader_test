@@ -8,6 +8,7 @@ export const InvoiceDataSchema = z.object({
         description: z.string().nullable(),
         quantity: z.number().nullable(),
         unit_price: z.number().nullable(),
+        total: z.number().nullable().describe('Stated line total excluding VAT; null if missing or unreadable. Never calculate it.'),
     })).nullable(),
     taxes: z.array(z.object({
         rate: z.number().nullable().describe('VAT percentage as printed: 20 means 20%, not 0.20.'),
