@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { readInvoice } from "./ocr";
 import { describeError } from "./errors";
 import { extractInvoice } from "./extract";
+import { checkConsistency } from "./consistency";
 import { InvoiceSchema, type Invoice } from "../shared/schema";
 
 async function main() {
@@ -25,7 +26,8 @@ async function main() {
     throw new Error("Set MISTRAL_API_KEY in .env before running the pipeline.");
   }
 
-  if (!process.env.MISTRAL_LLM_MODEL?.trim()) {
+  const model = process.env.MISTRAL_LLM_MODEL?.trim();
+  if (!model) {
     throw new Error("Set MISTRAL_LLM_MODEL in .env before running the pipeline.");
   }
 
@@ -54,14 +56,17 @@ async function main() {
         throw new Error("OCR returned no text to extract.");
       }
       console.log(`[extract] ${fileName}`);
-      const extracted = await extractInvoice(markdown);
+      const extracted = await extractInvoice(client, model, markdown);
+
+      stage = "consistency";
+      const warnings = [...extracted.warnings, ...checkConsistency(extracted.data)];
 
       stage = "validate";
       result = InvoiceSchema.parse({
         source_file: fileName,
         status: "success",
         data: extracted.data,
-        warnings: extracted.warnings,
+        warnings,
         error: null,
       });
     } catch (error: unknown) {
