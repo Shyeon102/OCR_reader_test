@@ -44,3 +44,4 @@ next-env.d.ts
 # Generated OCR results
 /output/ocr/
 /output/invoices/
+/invoices/*
