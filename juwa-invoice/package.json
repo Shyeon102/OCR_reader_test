@@ -8,13 +8,15 @@
     "start": "next start",
     "lint": "eslint",
     "pipeline": "node --env-file-if-exists=.env --import tsx pipeline/index.ts",
-    "typecheck": "tsc --noEmit --incremental false"
+    "typecheck": "tsc --noEmit --incremental false",
+    "test": "node --import tsx --test pipeline/*.test.ts"
   },
   "dependencies": {
+    "@mistralai/mistralai": "^2.7.0",
     "next": "16.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "@mistralai/mistralai": "^2.7.0"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
@@ -24,8 +26,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "tsx": "^4.23.15"
+    "tsx": "^4.23.15",
+    "typescript": "^5"
   },
   "engines": {
     "node": ">=22.19.0"
