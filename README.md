@@ -1,6 +1,6 @@
 # JUWA Invoice Extraction
 
-TypeScript pipeline using Mistral OCR, structured LLM extraction, Zod validation and arithmetic checks. Results are local JSON files; no database is used. The Next.js review interface is not implemented yet.
+TypeScript pipeline using Mistral OCR, structured LLM extraction, Zod validation and arithmetic checks. Results are local JSON files; no database is used. A single-page Next.js interface reads local results and displays invoice details, warnings and missing values.
 
 ## Running the project
 
@@ -39,8 +39,14 @@ Matching filenames are overwritten, including their warnings; other result files
 npm test           # Local checks; no API calls
 npm run typecheck
 npm run lint
-npm run dev        # http://localhost:3000 — currently the starter page
+npm run dev        # http://localhost:3000 — invoice review
 ```
+
+The review page reads `output/invoices/` on the server and validates each JSON file.
+Select an invoice to view its items, VAT, totals and warnings. Click **Actualiser**
+after running the pipeline to load current results. Missing values show **À vérifier**;
+actual zeroes remain zero. Invalid result files appear as failures without hiding
+other invoices. An empty or absent output directory shows an empty state.
 
 ## Current implementation
 
@@ -122,4 +128,4 @@ Extraction and arithmetic warnings are combined for the current run. A processin
 - **Limited accounting rules:** EUR and cent rounding are assumed. Discounts, withholding, special adjustments and other rounding methods are not modeled separately. Mismatches require review. An unknown VAT base skips the rate check, while the TTC check can still use available tax amounts.
 - **Basic operations:** no application-level retry policy, parallel processing, OCR reuse, batch resume or run history. API quota and availability can cause failures. Temporary-upload deletion is attempted; cleanup errors are logged.
 - **File-based storage:** matching filenames from different inputs overwrite results. Failed saves may leave older files, and raw OCR snapshots can outlive a failed rerun. Final JSON is the status record when successfully written.
-- **Pending UI:** the web app does not display results yet. Traceability is limited to filenames and saved page-level OCR, without verified field-to-page references.
+- **Basic review UI:** results are read-only. There is no PDF upload, in-browser pipeline execution, PDF preview or editing. Traceability is limited to filenames and saved page-level OCR. Warning details retain the language of the pipeline output; the interface labels are French.
