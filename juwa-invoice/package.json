@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "demo": "node --import tsx scripts/demo.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "pipeline": "node --env-file-if-exists=.env --import tsx pipeline/index.ts",
     "typecheck": "tsc --noEmit --incremental false",
-    "test": "node --import tsx --test pipeline/*.test.ts"
+    "test": "node --import tsx --test pipeline/*.test.ts shared/*.test.ts"
   },
   "dependencies": {
     "@mistralai/mistralai": "^2.7.0",
