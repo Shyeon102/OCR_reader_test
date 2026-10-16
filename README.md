@@ -5,6 +5,10 @@ TypeScript pipeline using Mistral OCR, structured LLM extraction, Zod validation
 ## Running the project
 
 Requires Node.js 22.19+, npm, and a Mistral account with OCR and chat-model access.
+The application, pipeline, package manifest and lockfile all live in
+`juwa-invoice/`. Install dependencies there only. The repository root contains
+this README and Git configuration, not a separate npm project.
+
 From the repository root:
 
 ```sh
@@ -40,7 +44,11 @@ The script runs the pipeline first, then starts the development server. It also
 starts the interface after a nonzero pipeline exit so available failure results
 can be reviewed; a setup failure may leave only previous results. Open the local
 URL printed by Next.js (normally http://localhost:3000). Press Ctrl+C to stop.
-Every demo run processes invoices again and makes API calls.
+Every demo run processes invoices again and makes API calls. A running web server
+does not mean the pipeline succeeded: check the pipeline summary and final JSON.
+The demo command ultimately returns the web process exit status rather than
+preserving the pipeline failure code. For a pipeline success/failure check, run
+`npm run pipeline` separately.
 
 PDFs are processed sequentially in filename order, without scanning subdirectories. Each run calls OCR and the LLM again. Outputs are created automatically:
 
@@ -53,8 +61,15 @@ Matching filenames are overwritten, including their warnings; other result files
 npm test           # Local checks; no API calls
 npm run typecheck
 npm run lint
+npm run build     # Production build check
 npm run dev        # http://localhost:3000 — invoice review
 ```
+
+Run these checks from `juwa-invoice/`. Tests, type checking, lint and build do not
+call Mistral and do not require an API key. To verify a clean setup, clone the
+repository into a new directory, run `npm ci` inside `juwa-invoice/`, then run the
+checks above. Installed `node_modules/` folders are ignored by Git and must not be
+committed. Configure `.env` and provide PDFs only when testing API extraction.
 
 The review page reads `output/invoices/` on the server and validates each JSON file.
 Select an invoice to view its items, VAT, totals and warnings. Click **Actualiser**
